@@ -1,0 +1,44 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ./homarr/configs:/app/data/configs
+      - ./homarr/icons:/app/public/icons
+      - ./homarr/data:/data
+    ports:
+      - '7575:7575'
+    network_mode: bridge
+  
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: kuma
+    restart: unless-stopped
+    volumes:
+      - kuma-data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 3001:3001
+    network_mode: bridge
+
+  portainer-ce:
+    container_name: portainer
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9443:9443
+    network_mode: bridge
+
+volumes:
+  kuma-data:
+    external: true
+    name: kuma-data
+  portainer-data:
+    external: true
+    name: portainer_data
+

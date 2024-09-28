@@ -1,0 +1,10 @@
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    volumes:
+      - /home/martin/vw-data:/data
+    ports:
+      - 9090:80
+    network_mode: bridge

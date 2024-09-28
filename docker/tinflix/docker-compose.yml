@@ -1,0 +1,114 @@
+name: tinflix
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
+    volumes:
+      - jellyfin-config:/config
+      - /home/martin/media:/data
+    networks:
+      default:
+        ipv4_address: 172.20.0.20
+    ports:
+      - 8096:8096
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    restart: unless-stopped
+  qbit:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbit
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+      - WEBUI_PORT=9091
+    volumes:
+      - qbit-config:/config
+      - /home/martin/Downloads:/downloads
+    networks:
+      default:
+        ipv4_address: 172.20.0.21
+    ports:
+      - 9091:9091
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+    volumes:
+      - prowlarr-config:/config
+    networks:
+      default:
+        ipv4_address: 172.20.0.22
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+    volumes:
+      - radarr-config:/config
+      - /home/martin/media/movies:/movies 
+      - /home/martin/Downloads:/downloads 
+    networks:
+      default:
+        ipv4_address: 172.20.0.23
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+    volumes:
+      - sonarr-config:/config
+      - /home/martin/media/tv:/tv 
+      - /home/martin/Downloads:/downloads 
+    networks:
+      default:
+        ipv4_address: 172.20.0.24
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+volumes:
+  jellyfin-config:
+    external: true
+    name: jellyfin-config
+  qbit-config:
+    external: true
+    name: qbit-config
+  prowlarr-config:
+    external: true
+    name: prowlarr-config 
+  radarr-config:
+    external: true
+    name: radarr-config
+  sonarr-config:
+    external: true
+    name: sonarr-config
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
