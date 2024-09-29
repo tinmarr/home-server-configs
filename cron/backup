@@ -20,11 +20,9 @@ gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
 
 echo "$(date): Saving Backup"
 backedup=$(ls ~/backup_disk | rg vw)
-if [[ $(echo $backedup | wc -l) -ge 3 ]]; then
-    for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 3))); do
-        rm ~/backup_disk/$item
-    done
-fi
+for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 3))); do
+    rm ~/backup_disk/$item
+done
 mv $filename ~/backup_disk &
 
 oldfile="$(rclone lsf b2:chappy-vw-backup)"
@@ -48,11 +46,9 @@ oldfile="$(rclone lsf b2:chappy-server-backup)"
 
 echo "$(date): Making space on disk..."
 backedup=$(ls ~/backup_disk | rg photos)
-if [[ $(echo $backedup | wc -l) -ge 3 ]]; then
-    for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 3))); do
-        rm ~/backup_disk/$item
-    done
-fi
+for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 3))); do
+    rm ~/backup_disk/$item
+done
 
 echo "$(date): Moving file..."
 mv "$filename" ~/backup_disk &
