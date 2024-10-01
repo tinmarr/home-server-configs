@@ -26,7 +26,7 @@ done
 mv $filename ~/backup_disk &
 
 oldfile="$(rclone lsf b2:chappy-vw-backup)"
-(rclone move $enc_filename b2:chappy-vw-backup && rclone deletefile b2:chappy-vw-backup/$oldfile) &
+(rclone move $enc_filename b2:chappy-vw-backup && rclone deletefile --b2-hard-delete b2:chappy-vw-backup/$oldfile) &
 
 echo "$(date): Backing up photos"
 filename="$(date +'%F')-photos.tar.gz"
@@ -42,7 +42,7 @@ gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
 
 echo "$(date): Starting backup to B2..."
 oldfile="$(rclone lsf b2:chappy-server-backup)"
-(rclone move $enc_filename b2:chappy-server-backup && rclone deletefile b2:chappy-server-backup/$oldfile) &
+(rclone move $enc_filename b2:chappy-server-backup && rclone deletefile --b2-hard-delete b2:chappy-server-backup/$oldfile) &
 
 echo "$(date): Making space on disk..."
 backedup=$(ls ~/backup_disk | rg photos)
