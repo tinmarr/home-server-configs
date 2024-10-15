@@ -52,7 +52,7 @@ cd ~
 echo "$(date): Backing up photos"
 
 docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | gzip > "/home/martin/media/photos/dump.sql.gz"
-_backup_folder photos "~/media/photos/{library,profile,upload,dump.sql.gz}" chappy-server-backup
+_backup_folder photos "$(echo ~/media/photos/{library,profile,upload,dump.sql.gz})" chappy-server-backup
 rm ~/media/photos/dump.sql.gz # Don't need to save random dumps
 
 
