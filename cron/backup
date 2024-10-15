@@ -1,6 +1,30 @@
 #!/usr/bin/env bash
-cd ~
 
+# Args:
+#   1. Filename - will be prepended by the date and appended with .tar.gz
+#   2. Folder - the folder or file to archive
+#   3. Bucket - the b2 bucket to use
+_backup_folder() {
+    echo "$(date): Creating Backup"
+    filename="$(date +'%F')-$1.tar.gz"
+    tar czf $filename $2
+
+    enc_filename=encrypted-$filename.gpg
+    gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
+
+    echo "$(date): Saving Backup"
+    backedup=$(ls ~/backup_disk | rg $1)
+    for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 2))); do
+        rm ~/backup_disk/$item
+    done
+    mv $filename ~/backup_disk &
+
+    oldfile="$(rclone lsf b2:$3)"
+    (rclone move $enc_filename b2:$3 && rclone deletefile --b2-hard-delete b2:$3/$oldfile) &
+}
+
+cd ~
+##############################
 echo "$(date): Backing up notes"
 cd ~/notes
 git add .
@@ -8,50 +32,29 @@ git commit --no-gpg-sign -m "backup"
 git push
 cd ~
 
+##############################
 echo "$(date): Backing up Vaultwarden"
-echo "$(date): Creating Backup"
 sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
 
-filename="$(date +'%F')-vw.tar.gz"
-tar czf $filename vw-data
+_backup_folder vw vw-data chappy-vw-backup
 
-enc_filename=encrypted-$filename.gpg
-gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
+##############################
+cd sentry
+echo "$(date): Backing up Sentry"
+sqlite3 db/db.sqlite3 ".backup '/home/martin/sentry/db/db-backup.sqlite3'"
+sqlite3 db/superset.db ".backup '/home/martin/sentry/db/superset-backup.db'"
 
-echo "$(date): Saving Backup"
-backedup=$(ls ~/backup_disk | rg vw)
-for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 2))); do
-    rm ~/backup_disk/$item
-done
-mv $filename ~/backup_disk &
+_backup_folder sentry db sentry-data-backup
 
-oldfile="$(rclone lsf b2:chappy-vw-backup)"
-(rclone move $enc_filename b2:chappy-vw-backup && rclone deletefile --b2-hard-delete b2:chappy-vw-backup/$oldfile) &
+cd ~
 
+##############################
 echo "$(date): Backing up photos"
-filename="$(date +'%F')-photos.tar.gz"
 
-echo "$(date): Starting tarball for $filename"
 docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | gzip > "/home/martin/media/photos/dump.sql.gz"
-tar czf $filename ~/media/photos/{library,profile,upload,dump.sql.gz} -P 
+_backup_folder photos "~/media/photos/{library,profile,upload,dump.sql.gz}" chappy-server-backup
 rm ~/media/photos/dump.sql.gz # Don't need to save random dumps
 
-echo "$(date): Encrypting..."
-enc_filename=encrypted-$filename.gpg
-gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
-
-echo "$(date): Starting backup to B2..."
-oldfile="$(rclone lsf b2:chappy-server-backup)"
-(rclone move $enc_filename b2:chappy-server-backup && rclone deletefile --b2-hard-delete b2:chappy-server-backup/$oldfile) &
-
-echo "$(date): Making space on disk..."
-backedup=$(ls ~/backup_disk | rg photos)
-for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 2))); do
-    rm ~/backup_disk/$item
-done
-
-echo "$(date): Moving file..."
-mv "$filename" ~/backup_disk &
 
 echo "$(date): Waiting for everything to finish..."
 wait
