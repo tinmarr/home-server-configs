@@ -13,8 +13,9 @@ _backup_folder() {
     gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
 
     echo "$(date): Saving Backup"
-    backedup=$(ls ~/backup_disk | rg $1)
-    for item in $(echo $backedup | head -n $(($(echo $backedup | wc -l) - 2))); do
+    backedup=$(ls -1 ~/backup_disk | grep $1)
+    count=$(($(ls -1 ~/backup_disk | grep $1 | wc -l) - 2))
+    for item in $(echo $backedup | head -n $count); do
         rm ~/backup_disk/$item
     done
     mv $filename ~/backup_disk &
