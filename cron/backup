@@ -34,6 +34,10 @@ git push
 cd ~
 
 ##############################
+echo "$(date): Backing up Actual Budget"
+_backup_folder actual actual-data chappy-actual-backup
+
+##############################
 echo "$(date): Backing up Vaultwarden"
 sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
 
