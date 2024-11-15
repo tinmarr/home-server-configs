@@ -1,24 +1,5 @@
 name: tinflix
 services:
-  jellyfin:
-    image: lscr.io/linuxserver/jellyfin:latest
-    container_name: jellyfin
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Montreal
-      - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
-    volumes:
-      - jellyfin-config:/config
-      - /home/martin/media:/data
-    networks:
-      default:
-        ipv4_address: 172.20.0.20
-    ports:
-      - 8096:8096
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
-    restart: unless-stopped
   qbit:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbit
