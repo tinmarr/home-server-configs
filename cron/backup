@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+CHAPPY_BUCKET="chappy-data-backup"
+SENTRY_BUCKET="sentry-data-backup"
+
 # Args:
 #   1. Filename - will be prepended by the date and appended with .tar.gz
 #   2. Folder - the folder or file to archive
@@ -12,16 +15,23 @@ _backup_folder() {
     enc_filename=encrypted-$filename.gpg
     gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
 
-    echo "$(date): Saving Backup"
+    echo "$(date): Saving Backup Locally"
     backedup=$(ls -1 ~/backup_disk | grep $1)
     count=$(($(ls -1 ~/backup_disk | grep $1 | wc -l) - 2))
     for item in $(echo $backedup | head -n $count); do
         rm ~/backup_disk/$item
     done
-    mv $filename ~/backup_disk &
 
-    oldfile="$(rclone lsf b2:$3)"
-    (rclone move $enc_filename b2:$3 && rclone deletefile --b2-hard-delete b2:$3/$oldfile) &
+    mv $filename ~/backup_disk
+
+    echo "$(date): Saving Backup to Backblaze"
+    rclone move $enc_filename b2:$3
+
+    backedup=$(rclone lsf b2:$3 | grep $1)
+    count=$(($(rclone lsf b2:$3 | grep $1 | wc -l) - 2))
+    for item in $(echo $backedup | head -n $count); do
+        rclone deletefile --b2-hard-delete b2:$3/$item
+    done
 }
 
 cd ~
@@ -35,13 +45,13 @@ cd ~
 
 ##############################
 echo "$(date): Backing up Actual Budget"
-_backup_folder actual actual-data chappy-actual-backup
+_backup_folder actual actual-data $CHAPPY_BUCKET
 
 ##############################
 echo "$(date): Backing up Vaultwarden"
 sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
 
-_backup_folder vw vw-data chappy-vw-backup
+_backup_folder vw vw-data $CHAPPY_BUCKET
 
 ##############################
 cd sentry
@@ -49,7 +59,7 @@ echo "$(date): Backing up Sentry"
 sqlite3 db/db.sqlite3 ".backup '/home/martin/sentry/db/db-backup.sqlite3'"
 sqlite3 db/superset.db ".backup '/home/martin/sentry/db/superset-backup.db'"
 
-_backup_folder sentry db sentry-data-backup
+_backup_folder sentry db $SENTRY_BUCKET
 
 cd ~
 
@@ -57,11 +67,7 @@ cd ~
 echo "$(date): Backing up photos"
 
 docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | gzip > "/home/martin/media/photos/dump.sql.gz"
-_backup_folder photos "$(echo ~/media/photos/{library,profile,upload,dump.sql.gz})" chappy-server-backup
-rm ~/media/photos/dump.sql.gz # Don't need to save random dumps
-
-
-echo "$(date): Waiting for everything to finish..."
-wait
+_backup_folder photos "$(echo ./media/photos/{library,profile,upload,dump.sql.gz})" $CHAPPY_BUCKET
+rm ./media/photos/dump.sql.gz # Don't need to save random dumps
 
 echo "$(date): Done"
