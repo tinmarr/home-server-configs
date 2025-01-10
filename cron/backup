@@ -17,7 +17,7 @@ _backup_folder() {
 
     echo "$(date): Saving Backup Locally"
     backedup=$(ls -1 ~/backup_disk | grep $1)
-    count=$(($(ls -1 ~/backup_disk | grep $1 | wc -l) - 2))
+    count=$(( $(ls -1 ~/backup_disk | grep $1 | wc -l) - 2 ))
     for item in $(echo $backedup | head -n $count); do
         rm ~/backup_disk/$item
     done
@@ -25,13 +25,14 @@ _backup_folder() {
     mv $filename ~/backup_disk
 
     echo "$(date): Saving Backup to Backblaze"
-    rclone move $enc_filename b2:$3 --b2-disable-checksum
 
     backedup=$(rclone lsf b2:$3 | grep $1)
-    count=$(($(rclone lsf b2:$3 | grep $1 | wc -l) - 1))
+    count=$(( $(rclone lsf b2:$3 | grep $1 | wc -l) - 1 ))
     for item in $(echo $backedup | head -n $count); do
         rclone deletefile --b2-hard-delete b2:$3/$item
     done
+
+    rclone move $enc_filename b2:$3 --b2-disable-checksum
 }
 
 cd ~
