@@ -9,30 +9,38 @@ SENTRY_BUCKET="sentry-data-backup"
 #   3. Bucket - the b2 bucket to use
 _backup_folder() {
     echo "$(date): Creating Backup"
-    filename="$(date +'%F')-$1.tar.gz"
+    filename="$(date +'%FT%H%M%S')-$1.tar.gz"
     tar czf $filename $2
 
     enc_filename=encrypted-$filename.gpg
     gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
 
+
+
     echo "$(date): Saving Backup Locally"
-    backedup=$(ls -1 ~/backup_disk | grep $1)
+    mv $filename ~/backup_disk
+
     count=$(( $(ls -1 ~/backup_disk | grep $1 | wc -l) - 2 ))
-    for item in $(echo $backedup | head -n $count); do
+    if [[ $count -lt 0 ]]; then
+        count=0
+    fi
+    for item in $(ls -1 ~/backup_disk | grep $1 | head -n $count); do
+        echo "removing: $item"
         rm ~/backup_disk/$item
     done
 
-    mv $filename ~/backup_disk
 
     echo "$(date): Saving Backup to Backblaze"
+    rclone move $enc_filename b2:$3 --b2-disable-checksum --transfers 32
 
-    backedup=$(rclone lsf b2:$3 | grep $1)
     count=$(( $(rclone lsf b2:$3 | grep $1 | wc -l) - 1 ))
-    for item in $(echo $backedup | head -n $count); do
+    if [[ $count -lt 0 ]]; then
+        count=0
+    fi
+    for item in $(rclone lsf b2:$3 | grep $1 | head -n $count); do
+        echo "removing: $item"
         rclone deletefile --b2-hard-delete b2:$3/$item
     done
-
-    rclone move $enc_filename b2:$3 --b2-disable-checksum
 }
 
 cd ~
