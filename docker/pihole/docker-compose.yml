@@ -10,7 +10,7 @@ services:
       - "8888:80/tcp"
     environment:
       TZ: 'America/Montreal'
-      # WEBPASSWORD: 'set a secure password here or it will be random'
+      FTLCONF_dns_listeningMode: 'all'
     # Volumes store your data between container upgrades
     volumes:
       - './etc-pihole:/etc/pihole'
