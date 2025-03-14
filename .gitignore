@@ -1,5 +1,5 @@
 *.logs
-**/homarr/**/*
+homarr-appdata
 *.db
 **/pihole/etc-*
 .env

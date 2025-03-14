@@ -1,27 +1,25 @@
 services:
   watchtower:
     container_name: watchtower
-    image: containrrr/watchtower  
+    image: containrrr/watchtower
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro 
+      - /etc/localtime:/etc/localtime:ro
     command: --cleanup --schedule "0 0 2 * * *"
     network_mode: bridge
 
   homarr:
     container_name: homarr
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:latest
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - ./homarr/configs:/app/data/configs
-      - ./homarr/icons:/app/public/icons
-      - ./homarr/data:/data
+      - ./homarr-appdata:/appdata
+    env_file: ./.env
     ports:
       - '7575:7575'
-    network_mode: bridge
-  
+
   uptime-kuma:
     container_name: kuma
     image: louislam/uptime-kuma:1
@@ -51,22 +49,7 @@ services:
       - '9092:3001'
     network_mode: bridge
 
-
-  portainer-ce:
-    container_name: portainer
-    image: portainer/portainer-ce:latest
-    restart: unless-stopped
-    volumes:
-      - portainer-data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 9443:9443
-    network_mode: bridge
-
 volumes:
   kuma-data:
     external: true
     name: kuma-data
-  portainer-data:
-    external: true
-    name: portainer_data
