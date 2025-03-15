@@ -1,0 +1,20 @@
+services:
+  superset:
+    build: .
+    container_name: superset
+    depends_on:
+      - psql
+    restart: unless-stopped
+    environment:
+      DB_HOST: psql
+    env_file: .env
+    ports:
+      - 9093:8088
+
+  psql:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+

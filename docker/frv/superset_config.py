@@ -1,0 +1,12 @@
+import os
+
+SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY", "YOUR_OWN_RANDOM_GENERATED_SECRET_KEY_WOOOWW")
+
+DB_HOST = os.getenv("DB_HOST", "psql")
+DB_USER = os.getenv("POSTGRES_USER", "postgres")
+# DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
+
+SQLALCHEMY_DATABASE_URI=f"postgresql://{DB_USER}@{DB_HOST}/superset"
+
+PREVENT_UNSAFE_DB_CONNECTIONS = True
+
