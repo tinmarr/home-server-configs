@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 CHAPPY_BUCKET="chappy-data-backup"
-SENTRY_BUCKET="sentry-data-backup"
 
 # Args:
 #   1. Filename - will be prepended by the date and appended with .tar.gz
@@ -63,14 +62,14 @@ sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
 _backup_folder vw vw-data $CHAPPY_BUCKET
 
 ##############################
-cd sentry
-echo "$(date): Backing up Sentry"
-sqlite3 db/db.sqlite3 ".backup '/home/martin/sentry/db/db-backup.sqlite3'"
-sqlite3 db/superset.db ".backup '/home/martin/sentry/db/superset-backup.db'"
-
-_backup_folder sentry db $SENTRY_BUCKET
-
-cd ~
+# cd sentry
+# echo "$(date): Backing up Sentry"
+# sqlite3 db/db.sqlite3 ".backup '/home/martin/sentry/db/db-backup.sqlite3'"
+# sqlite3 db/superset.db ".backup '/home/martin/sentry/db/superset-backup.db'"
+#
+# _backup_folder sentry db $SENTRY_BUCKET
+#
+# cd ~
 
 ##############################
 echo "$(date): Backing up photos"
