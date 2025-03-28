@@ -9,15 +9,13 @@ CHAPPY_BUCKET="chappy-data-backup"
 _backup_folder() {
     echo "$(date): Creating Backup"
     filename="$(date +'%FT%H%M%S')-$1.tar.gz"
-    tar czf $filename $2
+    tar czf ~/backup_disk/$filename $2
 
     enc_filename=encrypted-$filename.gpg
-    gpg --output $enc_filename --encrypt -r 15B87AFCCED88630 $filename
+    gpg --output ~/backup_disk/$enc_filename --encrypt -r 15B87AFCCED88630 ~/backup_disk/$filename
 
-
-
-    echo "$(date): Saving Backup Locally"
-    mv $filename ~/backup_disk
+    # echo "$(date): Saving Backup Locally"
+    # mv $filename ~/backup_disk
 
     count=$(( $(ls -1 ~/backup_disk | grep $1 | wc -l) - 2 ))
     if [[ $count -lt 0 ]]; then
@@ -30,7 +28,7 @@ _backup_folder() {
 
 
     echo "$(date): Saving Backup to Backblaze"
-    rclone move $enc_filename b2:$3 --b2-disable-checksum --transfers 32
+    rclone move ~/backup_disk/$enc_filename b2:$3 --b2-disable-checksum --transfers 32
 
     count=$(( $(rclone lsf b2:$3 | grep $1 | wc -l) - 1 ))
     if [[ $count -lt 0 ]]; then
