@@ -43,8 +43,8 @@ services:
       - TZ=America/Montreal
     volumes:
       - radarr-config:/config
-      - /home/martin/media/movies:/movies 
-      - /home/martin/Downloads:/downloads 
+      - /home/martin/media/movies:/movies
+      - /home/martin/Downloads:/downloads
     networks:
       default:
         ipv4_address: 172.20.0.23
@@ -60,8 +60,8 @@ services:
       - TZ=America/Montreal
     volumes:
       - sonarr-config:/config
-      - /home/martin/media/tv:/tv 
-      - /home/martin/Downloads:/downloads 
+      - /home/martin/media/tv:/tv
+      - /home/martin/Downloads:/downloads
     networks:
       default:
         ipv4_address: 172.20.0.24
@@ -70,15 +70,12 @@ services:
     restart: unless-stopped
 
 volumes:
-  jellyfin-config:
-    external: true
-    name: jellyfin-config
   qbit-config:
     external: true
     name: qbit-config
   prowlarr-config:
     external: true
-    name: prowlarr-config 
+    name: prowlarr-config
   radarr-config:
     external: true
     name: radarr-config

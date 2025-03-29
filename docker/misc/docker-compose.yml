@@ -21,23 +21,35 @@ services:
       - /home/martin/actual-data:/data
     restart: unless-stopped
   jellyfin:
-      image: lscr.io/linuxserver/jellyfin:latest
-      container_name: jellyfin
-      environment:
-        - PUID=1000
-        - PGID=1000
-        - TZ=America/Montreal
-        - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
-      volumes:
-        - jellyfin-config:/config
-        - /home/martin/media:/data
-      ports:
-        - 8096:8096
-      devices:
-        - /dev/dri/renderD128:/dev/dri/renderD128
-      restart: unless-stopped
+    container_name: jellyfin
+    image: lscr.io/linuxserver/jellyfin:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Montreal
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
+    volumes:
+      - jellyfin-config:/config
+      - /home/martin/media:/data
+    ports:
+      - 8096:8096
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    restart: unless-stopped
+  jellyseerr:
+    container_name: jellyseerr
+    image: ghcr.io/fallenbagel/jellyseerr:latest
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Montreal
+    ports:
+      - 5055:5055
+    volumes:
+      - jellyseerr-config:/app/config
+    restart: unless-stopped
 
 volumes:
   jellyfin-config:
     external: true
     name: jellyfin-config
+  jellyseerr-config:
