@@ -8,5 +8,7 @@ for dir in $dirs; do
     docker compose up -d
 done
 
+echo "Finished pulling... pruning now"
+
 cd ~/home-server-configs/docker
 docker image prune -af
