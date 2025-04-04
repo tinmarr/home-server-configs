@@ -29,16 +29,19 @@ _backup_folder() {
 
     echo "$(date): Saving Backup to Backblaze"
     rclone move ~/backup_disk/$enc_filename b2:$3 --b2-disable-checksum --transfers 32
+    echo "$(date): Done Backup to Backblaze"
 
     count=$(( $(rclone lsf b2:$3 | grep $1 | wc -l) - 1 ))
     if [[ $count -lt 0 ]]; then
         count=0
     fi
     for item in $(rclone lsf b2:$3 | grep $1 | head -n $count); do
-        echo "removing: $item"
+        echo "removing from Backblaze: $item"
         rclone deletefile --b2-hard-delete b2:$3/$item
     done
 }
+
+echo "docker ps | wc -l: $(docker ps | wc -l)"
 
 cd ~
 ##############################
@@ -77,3 +80,5 @@ _backup_folder photos "$(echo ./media/photos/{library,profile,upload,dump.sql.gz
 rm ./media/photos/dump.sql.gz # Don't need to save random dumps
 
 echo "$(date): Done"
+
+echo "docker ps | wc -l: $(docker ps | wc -l)"
