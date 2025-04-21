@@ -11,11 +11,9 @@ _backup_folder() {
     filename="$(date +'%FT%H%M%S')-$1.tar.gz"
     tar czf ~/backup_disk/$filename $2
 
+    echo "$(date): Encrypting Backup"
     enc_filename=encrypted-$filename.gpg
     gpg --output ~/backup_disk/$enc_filename --encrypt -r 15B87AFCCED88630 ~/backup_disk/$filename
-
-    # echo "$(date): Saving Backup Locally"
-    # mv $filename ~/backup_disk
 
     count=$(( $(ls -1 ~/backup_disk | grep $1 | wc -l) - 2 ))
     if [[ $count -lt 0 ]]; then
