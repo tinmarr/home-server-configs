@@ -3,3 +3,4 @@ homarr-appdata
 *.db
 **/pihole/etc-*
 .env
+docker/tinflix/wg-config
