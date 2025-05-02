@@ -61,9 +61,9 @@ services:
       - TZ=America/Montreal
     volumes:
       - prowlarr-config:/config
-    networks:
-      default:
-        ipv4_address: 172.20.0.22
+#    networks:
+#      default:
+#        ipv4_address: 172.20.0.22
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -78,9 +78,9 @@ services:
       - radarr-config:/config
       - /home/martin/media/movies:/movies
       - /home/martin/Downloads:/downloads
-    networks:
-      default:
-        ipv4_address: 172.20.0.23
+#    networks:
+#      default:
+#        ipv4_address: 172.20.0.23
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -95,9 +95,9 @@ services:
       - sonarr-config:/config
       - /home/martin/media/tv:/tv
       - /home/martin/Downloads:/downloads
-    networks:
-      default:
-        ipv4_address: 172.20.0.24
+#    networks:
+#      default:
+#        ipv4_address: 172.20.0.24
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -116,10 +116,10 @@ volumes:
     external: true
     name: sonarr-config
 
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+# networks:
+#   default:
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.20.0.0/16
+#           gateway: 172.20.0.1
