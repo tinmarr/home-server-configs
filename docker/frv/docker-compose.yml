@@ -13,6 +13,7 @@ services:
 
   psql:
     image: postgres:alpine
+    container_name: psql
     restart: unless-stopped
     env_file: .env
     volumes:
