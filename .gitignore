@@ -4,3 +4,5 @@ homarr-appdata
 **/pihole/etc-*
 .env
 docker/tinflix/wg-config
+ha-config
+.envrc

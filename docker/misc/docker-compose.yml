@@ -6,20 +6,22 @@ services:
     volumes:
       - /home/martin/vw-data:/data
     ports:
-      - 9090:80
+      - ${IP}:9090:80
     network_mode: bridge
+
   actual_budget:
     image: docker.io/actualbudget/actual-server:latest-alpine
     container_name: actual_budget
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
       # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
-      - 5006:5006
+      - ${IP}:5006:5006
     volumes:
       # Change './actual-data' below to the path to the folder you want Actual to store its data in on your server.
       # '/data' is the path Actual will look for its files in by default, so leave that as-is.
       - /home/martin/actual-data:/data
     restart: unless-stopped
+
   jellyfin:
     container_name: jellyfin
     image: lscr.io/linuxserver/jellyfin:latest
@@ -32,10 +34,11 @@ services:
       - jellyfin-config:/config
       - /home/martin/media:/data
     ports:
-      - 8096:8096
+      - ${IP}:8096:8096
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     restart: unless-stopped
+    
   jellyseerr:
     container_name: jellyseerr
     image: ghcr.io/fallenbagel/jellyseerr:latest
@@ -43,10 +46,21 @@ services:
       - LOG_LEVEL=debug
       - TZ=America/Montreal
     ports:
-      - 5055:5055
+      - ${IP}:5055:5055
     volumes:
       - jellyseerr-config:/app/config
     restart: unless-stopped
+
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - ./ha-config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
 
 volumes:
   jellyfin-config:

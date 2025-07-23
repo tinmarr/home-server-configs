@@ -18,7 +18,7 @@ services:
       - ./homarr-appdata:/appdata
     env_file: ./.env
     ports:
-      - '7575:7575'
+      - ${IP}:7575:7575
 
   uptime-kuma:
     container_name: kuma
@@ -28,7 +28,7 @@ services:
       - kuma-data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 3001:3001
+      - ${IP}:3001:3001
     network_mode: bridge
 
   dash:
@@ -46,8 +46,7 @@ services:
     volumes:
       - /:/mnt/host:ro
     ports:
-      - '9092:3001'
-    network_mode: bridge
+      - ${IP}:9092:3001
 
 volumes:
   kuma-data:

@@ -9,7 +9,7 @@ services:
       DB_HOST: psql
     env_file: .env
     ports:
-      - 9093:8088
+      - ${IP}:9093:8088
 
   psql:
     image: postgres:alpine
@@ -19,6 +19,6 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${IP}:5432:5432
 
 

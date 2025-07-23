@@ -13,10 +13,10 @@ services:
     volumes:
       - qbit-config:/config
       - /home/martin/Downloads:/downloads
+    network_mode: service:wireguard
     # networks:
     #   default:
     #     ipv4_address: 172.20.0.21
-    network_mode: service:wireguard
     # ports:
     #   - 9091:9091
     #   - 6881:6881
@@ -45,8 +45,9 @@ services:
       - ./wg-config:/config
       # - /lib/modules:/lib/modules #optional
     ports:
-      - 51820:51820/udp
-      - 9091:9091
+      - ${IP}:51820:51820/udp
+      - ${IP}:9091:9091
+      - 127.0.0.1:9091:9091
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -65,7 +66,7 @@ services:
 #      default:
 #        ipv4_address: 172.20.0.22
     ports:
-      - 9696:9696
+      - ${IP}:9696:9696
     restart: unless-stopped
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -82,7 +83,7 @@ services:
 #      default:
 #        ipv4_address: 172.20.0.23
     ports:
-      - 7878:7878
+      - ${IP}:7878:7878
     restart: unless-stopped
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -99,7 +100,7 @@ services:
 #      default:
 #        ipv4_address: 172.20.0.24
     ports:
-      - 8989:8989
+      - ${IP}:8989:8989
     restart: unless-stopped
 
 volumes:
