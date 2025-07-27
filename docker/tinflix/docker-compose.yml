@@ -45,9 +45,8 @@ services:
       - ./wg-config:/config
       # - /lib/modules:/lib/modules #optional
     ports:
-      - ${IP}:51820:51820/udp
+      #- ${IP}:51820:51820/udp
       - ${IP}:9091:9091
-      - 127.0.0.1:9091:9091
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
