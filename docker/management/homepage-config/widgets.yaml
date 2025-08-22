@@ -3,6 +3,15 @@
 # https://gethomepage.dev/configs/info-widgets/
 
 - resources:
+    label: System
     cpu: true
+    cputemp: true
+    tempmin: 0
+    tempmax: 100
     memory: true
+- resources:
+    label: Main disk
     disk: /
+- resources:
+    label: Backup disk
+    disk: /mnt/backup

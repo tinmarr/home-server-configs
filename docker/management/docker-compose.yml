@@ -23,6 +23,7 @@ services:
     volumes:
       - ./homepage-config:/app/config 
       - /var/run/docker.sock:/var/run/docker.sock 
+      - /home/martin/backup_disk:/mnt/backup:ro
     environment:
       #HOMEPAGE_ALLOWED_HOSTS: gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
       LOG_TARGETS: stdout
