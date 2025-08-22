@@ -29,6 +29,11 @@ services:
     restart: always
     healthcheck:
       disable: false
+    labels:
+      - homepage.group=Apps
+      - homepage.name=Immich
+      - homepage.href=https://immich.tinmarr.com
+      - homepage.icon=immich
 
   immich-machine-learning:
     container_name: immich_machine_learning

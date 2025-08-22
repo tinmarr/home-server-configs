@@ -8,17 +8,26 @@ services:
       - /etc/localtime:/etc/localtime:ro
     command: --cleanup --schedule "0 0 2 * * *"
     network_mode: bridge
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Watchtower
+      - homepage.href=#
+      - homepage.icon=watchtower
 
-  homarr:
-    container_name: homarr
-    image: ghcr.io/homarr-labs/homarr:latest
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
     restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - ./homarr-appdata:/appdata
-    env_file: ./.env
     ports:
-      - ${IP}:7575:7575
+      - ${IP}:3000:3000
+    volumes:
+      - ./homepage-config:/app/config 
+      - /var/run/docker.sock:/var/run/docker.sock 
+    environment:
+      #HOMEPAGE_ALLOWED_HOSTS: gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+      LOG_TARGETS: stdout
+      PUID: 1000
+      PGID: 1000
 
   uptime-kuma:
     container_name: kuma
@@ -30,6 +39,11 @@ services:
     ports:
       - ${IP}:3001:3001
     network_mode: bridge
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=UptimeKuma
+      - homepage.href=https://kuma.tinmarr.com
+      - homepage.icon=uptime-kuma
 
   dash:
     container_name: dash
@@ -47,6 +61,11 @@ services:
       - /:/mnt/host:ro
     ports:
       - ${IP}:9092:3001
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Dash.
+      - homepage.href=https://dash.tinmarr.com
+      - homepage.icon=dashdot
 
 volumes:
   kuma-data:

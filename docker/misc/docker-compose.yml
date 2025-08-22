@@ -8,6 +8,11 @@ services:
     ports:
       - ${IP}:9090:80
     network_mode: bridge
+    labels:
+      - homepage.group=Apps
+      - homepage.name=Vaultwarden
+      - homepage.href=https://vw.tinmarr.com
+      - homepage.icon=vaultwarden
 
   actual_budget:
     image: docker.io/actualbudget/actual-server:latest-alpine
@@ -21,6 +26,11 @@ services:
       # '/data' is the path Actual will look for its files in by default, so leave that as-is.
       - /home/martin/actual-data:/data
     restart: unless-stopped
+    labels:
+      - homepage.group=Apps
+      - homepage.name=Actual Budget
+      - homepage.href=https://budget.tinmarr.com
+      - homepage.icon=actual-budget
 
   jellyfin:
     container_name: jellyfin
@@ -38,6 +48,11 @@ services:
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=Jellyfin
+      - homepage.href=https://jellyfin.tinmarr.com
+      - homepage.icon=jellyfin
     
   jellyseerr:
     container_name: jellyseerr
@@ -50,6 +65,11 @@ services:
     volumes:
       - jellyseerr-config:/app/config
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=Jellyseerr
+      - homepage.href=https://tinflix.tinmarr.com
+      - homepage.icon=jellyseerr
 
   homeassistant:
     container_name: homeassistant
@@ -61,6 +81,11 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
+    labels:
+      - homepage.group=Apps
+      - homepage.name=Home Assistant
+      - homepage.href=https://ha.tinmarr.com
+      - homepage.icon=home-assistant
 
 volumes:
   jellyfin-config:

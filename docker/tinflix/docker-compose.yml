@@ -14,14 +14,16 @@ services:
       - qbit-config:/config
       - /home/martin/Downloads:/downloads
     network_mode: service:wireguard
-    # networks:
-    #   default:
-    #     ipv4_address: 172.20.0.21
     # ports:
     #   - 9091:9091
     #   - 6881:6881
     #   - 6881:6881/udp
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=qBittorrent
+      - homepage.href=/qbit
+      - homepage.icon=qbittorrent
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
@@ -51,7 +53,6 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
 
-
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -61,12 +62,15 @@ services:
       - TZ=America/Montreal
     volumes:
       - prowlarr-config:/config
-#    networks:
-#      default:
-#        ipv4_address: 172.20.0.22
     ports:
       - ${IP}:9696:9696
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=Prowlarr
+      - homepage.href=/prowlarr
+      - homepage.icon=prowlarr
+
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -78,12 +82,15 @@ services:
       - radarr-config:/config
       - /home/martin/media/movies:/movies
       - /home/martin/Downloads:/downloads
-#    networks:
-#      default:
-#        ipv4_address: 172.20.0.23
     ports:
       - ${IP}:7878:7878
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=Radarr
+      - homepage.href=/radarr
+      - homepage.icon=radarr
+
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -95,12 +102,14 @@ services:
       - sonarr-config:/config
       - /home/martin/media/tv:/tv
       - /home/martin/Downloads:/downloads
-#    networks:
-#      default:
-#        ipv4_address: 172.20.0.24
     ports:
       - ${IP}:8989:8989
     restart: unless-stopped
+    labels:
+      - homepage.group=Tinflix
+      - homepage.name=Sonarr
+      - homepage.href=/sonarr
+      - homepage.icon=sonarr
 
 volumes:
   qbit-config:
@@ -115,11 +124,3 @@ volumes:
   sonarr-config:
     external: true
     name: sonarr-config
-
-# networks:
-#   default:
-#     ipam:
-#       driver: default
-#       config:
-#         - subnet: 172.20.0.0/16
-#           gateway: 172.20.0.1
