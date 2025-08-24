@@ -1,8 +1,8 @@
 *.logs
-homarr-appdata
 *.db
 **/pihole/etc-*
 .env
 docker/tinflix/wg-config
 ha-config
 .envrc
+docker/management/dockge-data

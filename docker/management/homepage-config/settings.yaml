@@ -18,7 +18,7 @@ disableUpdateCheck: true
 layout:
   - Monitoring:
       style: row
-      columns: 4
+      columns: 5
   - Apps:
   - Tinflix:
 disableCollapse: true
