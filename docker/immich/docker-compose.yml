@@ -13,9 +13,6 @@ services:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     user: "1000"
-    # extends:
-    #   file: hwaccel.transcoding.yml
-    #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
@@ -34,6 +31,11 @@ services:
       - homepage.name=Immich
       - homepage.href=https://immich.tinmarr.com
       - homepage.icon=immich
+      - homepage.widget.type=immich
+      - homepage.widget.url=https://immich.tinmarr.com
+      - homepage.widget.key=${IMMICH_KEY}
+      - homepage.widget.version=2
+      - homepage.widget.fields=["photos", "videos", "storage"]
 
   immich-machine-learning:
     container_name: immich_machine_learning

@@ -6,13 +6,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
-    command: --cleanup --schedule "0 0 2 * * *"
-    network_mode: bridge
+    command: --cleanup --schedule "0 0 2 * * *" --http-api-token "${WATCHTOWER_KEY}" --http-api-metrics
     labels:
       - homepage.group=Monitoring
       - homepage.name=Watchtower
       - homepage.href=#
       - homepage.icon=watchtower
+      - homepage.widget.type=watchtower
+      - homepage.widget.url=http://watchtower:8080
+      - homepage.widget.key=${WATCHTOWER_KEY}
 
   homepage:
     container_name: homepage
@@ -45,6 +47,10 @@ services:
       - homepage.name=UptimeKuma
       - homepage.href=https://kuma.tinmarr.com
       - homepage.icon=uptime-kuma
+      - homepage.widget.type=uptimekuma
+      - homepage.widget.url=https://kuma.tinmarr.com
+      - homepage.widget.slug=api
+      - homepage.widget.fields=["up", "down"]
 
   dash:
     container_name: dash
