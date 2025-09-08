@@ -1,6 +1,9 @@
 FROM apache/superset:latest
 
-RUN pip install psycopg2-binary
+USER root
+
+RUN . /app/.venv/bin/activate && \
+    uv pip install psycopg2-binary
 
 USER superset
 COPY --chown=superset superset_config.py /app/superset_config.py
