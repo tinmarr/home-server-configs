@@ -50,6 +50,7 @@ services:
       # Tell Dockge where to find the stacks
       - DOCKGE_STACKS_DIR=${HOME}/home-server-configs/docker
       - DOCKGE_ENABLE_CONSOLE=true
+      - IP=${IP}
     labels:
       - homepage.group=Monitoring
       - homepage.name=Dockge
