@@ -71,21 +71,21 @@ services:
       - homepage.href=https://tinflix.tinmarr.com
       - homepage.icon=jellyseerr
 
-  homeassistant:
-    container_name: homeassistant
-    image: ghcr.io/home-assistant/home-assistant:stable
-    volumes:
-      - ./ha-config:/config
-      - /etc/localtime:/etc/localtime:ro
-      - /run/dbus:/run/dbus:ro
-    restart: unless-stopped
-    privileged: true
-    network_mode: host
-    labels:
-      - homepage.group=Apps
-      - homepage.name=Home Assistant
-      - homepage.href=https://ha.tinmarr.com
-      - homepage.icon=home-assistant
+  # homeassistant:
+  #   container_name: homeassistant
+  #   image: ghcr.io/home-assistant/home-assistant:stable
+  #   volumes:
+  #     - ./ha-config:/config
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /run/dbus:/run/dbus:ro
+  #   restart: unless-stopped
+  #   privileged: true
+  #   network_mode: host
+  #   labels:
+  #     - homepage.group=Apps
+  #     - homepage.name=Home Assistant
+  #     - homepage.href=https://ha.tinmarr.com
+  #     - homepage.icon=home-assistant
 
 volumes:
   jellyfin-config:
