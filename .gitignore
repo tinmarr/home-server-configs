@@ -2,7 +2,7 @@
 *.db
 **/pihole/etc-*
 .env
-docker/tinflix/wg-config
-ha-config
+*-config
+*-data
 .envrc
-docker/management/dockge-data
+pgdata/

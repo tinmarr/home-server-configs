@@ -11,7 +11,7 @@ services:
       - TZ=America/Montreal
       - WEBUI_PORT=9091
     volumes:
-      - qbit-config:/config
+      - ./qbit-config:/config
       - /home/martin/Downloads:/downloads
     network_mode: service:wireguard
     # ports:
@@ -61,7 +61,7 @@ services:
       - PGID=1000
       - TZ=America/Montreal
     volumes:
-      - prowlarr-config:/config
+      - ./prowlarr-config:/config
     ports:
       - ${IP}:9696:9696
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
       - PGID=1000
       - TZ=America/Montreal
     volumes:
-      - radarr-config:/config
+      - ./radarr-config:/config
       - /home/martin/media/movies:/movies
       - /home/martin/Downloads:/downloads
     ports:
@@ -99,7 +99,7 @@ services:
       - PGID=1000
       - TZ=America/Montreal
     volumes:
-      - sonarr-config:/config
+      - ./sonarr-config:/config
       - /home/martin/media/tv:/tv
       - /home/martin/Downloads:/downloads
     ports:
@@ -110,17 +110,3 @@ services:
       - homepage.name=Sonarr
       - homepage.href=/sonarr
       - homepage.icon=sonarr
-
-volumes:
-  qbit-config:
-    external: true
-    name: qbit-config
-  prowlarr-config:
-    external: true
-    name: prowlarr-config
-  radarr-config:
-    external: true
-    name: radarr-config
-  sonarr-config:
-    external: true
-    name: sonarr-config

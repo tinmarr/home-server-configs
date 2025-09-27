@@ -41,7 +41,7 @@ services:
       - TZ=America/Montreal
       - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
     volumes:
-      - jellyfin-config:/config
+      - ./jellyfin-config:/config
       - /home/martin/media:/data
     ports:
       - ${IP}:8096:8096
@@ -63,7 +63,7 @@ services:
     ports:
       - ${IP}:5055:5055
     volumes:
-      - jellyseerr-config:/app/config
+      - ./jellyseerr-config:/app/config
     restart: unless-stopped
     labels:
       - homepage.group=Tinflix
@@ -86,9 +86,3 @@ services:
   #     - homepage.name=Home Assistant
   #     - homepage.href=https://ha.tinmarr.com
   #     - homepage.icon=home-assistant
-
-volumes:
-  jellyfin-config:
-    external: true
-    name: jellyfin-config
-  jellyseerr-config:

@@ -62,7 +62,7 @@ services:
     image: louislam/uptime-kuma:1
     restart: unless-stopped
     volumes:
-      - kuma-data:/app/data
+      - ./kuma-data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - ${IP}:3001:3001
@@ -98,8 +98,3 @@ services:
       - homepage.name=Dash.
       - homepage.href=https://dash.tinmarr.com
       - homepage.icon=dashdot
-
-volumes:
-  kuma-data:
-    external: true
-    name: kuma-data

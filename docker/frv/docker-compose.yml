@@ -12,7 +12,7 @@ services:
       - ${IP}:9093:8088
 
   psql:
-    image: postgres:alpine
+    image: postgres:17-alpine
     container_name: psql
     restart: unless-stopped
     env_file: .env
