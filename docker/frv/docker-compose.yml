@@ -12,11 +12,11 @@ services:
       - ${IP}:9093:8088
 
   psql:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: psql
     restart: unless-stopped
     env_file: .env
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/18/data
     ports:
       - ${IP}:5432:5432
