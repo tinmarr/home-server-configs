@@ -8,6 +8,7 @@ services:
     ports:
       - ${IP}:9090:80
     network_mode: bridge
+    # env_file: .env
     labels:
       - homepage.group=Apps
       - homepage.name=Vaultwarden
