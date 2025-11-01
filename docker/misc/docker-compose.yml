@@ -16,7 +16,7 @@ services:
       - homepage.icon=vaultwarden
 
   actual_budget:
-    image: docker.io/actualbudget/actual-server:latest-alpine
+    image: docker.io/actualbudget/actual-server:latest
     container_name: actual_budget
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
