@@ -9,7 +9,7 @@ CHAPPY_BUCKET="chappy-data-backup"
 _backup_folder() {
     echo "$(date): Creating Backup"
     filename="$(date +'%FT%H%M%S')-$1.tar.gz"
-    tar czf ~/backup_disk/$filename $2
+    tar -cf - $2 | pigz -p 4 -9 > ~/backup_disk/$filename
 
     echo "$(date): Encrypting Backup"
     enc_filename=encrypted-$filename.gpg
@@ -39,8 +39,6 @@ _backup_folder() {
     done
 }
 
-echo "docker ps | wc -l: $(docker ps | wc -l)"
-
 cd ~
 ##############################
 echo "$(date): Backing up notes"
@@ -61,14 +59,27 @@ sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
 _backup_folder vw vw-data $CHAPPY_BUCKET
 
 ##############################
-# cd sentry
-# echo "$(date): Backing up Sentry"
-# sqlite3 db/db.sqlite3 ".backup '/home/martin/sentry/db/db-backup.sqlite3'"
-# sqlite3 db/superset.db ".backup '/home/martin/sentry/db/superset-backup.db'"
-#
-# _backup_folder sentry db $SENTRY_BUCKET
-#
-# cd ~
+cd ~/home-server-configs/docker
+echo "$(date): Backing up misc service configs"
+docker compose -f management/docker-compose.yml down uptime-kuma dockge > /dev/null 2>&1 &
+docker compose -f misc/docker-compose.yml down jellyfin jellyseerr > /dev/null 2>&1 &
+docker compose -f pihole/docker-compose.yml down > /dev/null 2>&1 &
+docker compose -f tinflix/docker-compose.yml down > /dev/null 2>&1 &
+
+echo "$(date): Waiting for services to go down"
+wait
+
+folders="$(echo management/{dockge-data,kuma-data} misc/{jellyfin-config,jellyseerr-config} pihole/etc-pihole tinflix/*/)"
+_backup_folder services "$folders" $CHAPPY_BUCKET
+
+docker compose -f management/docker-compose.yml up -d > /dev/null 2>&1 &
+docker compose -f misc/docker-compose.yml up -d > /dev/null 2>&1 &
+docker compose -f pihole/docker-compose.yml up -d > /dev/null 2>&1 &
+docker compose -f tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
+
+echo "$(date): Waiting for services to go up"
+wait
+cd ~
 
 ##############################
 echo "$(date): Backing up photos"
@@ -78,5 +89,3 @@ _backup_folder photos "$(echo ./media/photos/{library,profile,upload,dump.sql.gz
 rm ./media/photos/dump.sql.gz # Don't need to save random dumps
 
 echo "$(date): Done"
-
-echo "docker ps | wc -l: $(docker ps | wc -l)"

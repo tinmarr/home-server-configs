@@ -38,6 +38,7 @@ services:
     restart: unless-stopped
     ports:
       - ${IP}:5001:5001
+    user: 1000:1000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./dockge-data:/app/data
@@ -59,13 +60,14 @@ services:
 
   uptime-kuma:
     container_name: kuma
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:2
     restart: unless-stopped
     volumes:
       - ./kuma-data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - ${IP}:3001:3001
+    user: 1000:1000
     network_mode: bridge
     labels:
       - homepage.group=Monitoring

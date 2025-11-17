@@ -65,6 +65,7 @@ services:
       - ${IP}:5055:5055
     volumes:
       - ./jellyseerr-config:/app/config
+    user: 1000:1000
     restart: unless-stopped
     labels:
       - homepage.group=Tinflix
