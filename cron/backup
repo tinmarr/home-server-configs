@@ -64,6 +64,7 @@ _backup_folder vw vw-data $CHAPPY_BUCKET
 
 ##############################
 cd ~/home-server-configs/docker
+eval "$(direnv export bash)"
 echo "$(date): Backing up misc service configs"
 docker compose -f management/docker-compose.yml down uptime-kuma dockge > /dev/null 2>&1 &
 docker compose -f misc/docker-compose.yml down jellyfin jellyseerr > /dev/null 2>&1 &
@@ -84,6 +85,7 @@ docker compose -f tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
 echo "$(date): Waiting for services to go up"
 wait
 cd ~
+eval "$(direnv export bash)"
 
 ##############################
 echo "$(date): Backing up photos"
