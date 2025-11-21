@@ -39,6 +39,10 @@ _backup_folder() {
     done
 }
 
+printf "Container count: "
+docker ps | wc -l
+echo ""
+
 cd ~
 ##############################
 echo "$(date): Backing up notes"
@@ -89,3 +93,7 @@ _backup_folder photos "$(echo ./media/photos/{library,profile,upload,dump.sql.gz
 rm ./media/photos/dump.sql.gz # Don't need to save random dumps
 
 echo "$(date): Done"
+
+printf "Container count: "
+docker ps | wc -l
+echo ""
