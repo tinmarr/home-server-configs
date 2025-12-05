@@ -1,51 +1,11 @@
 #!/usr/bin/env bash
 
-CHAPPY_BUCKET="chappy-data-backup"
-
-# Args:
-#   1. Filename - will be prepended by the date and appended with .tar.gz
-#   2. Folder - the folder or file to archive
-#   3. Bucket - the b2 bucket to use
-_backup_folder() {
-    echo "$(date): Creating Backup"
-    filename="$(date +'%FT%H%M%S')-$1.tar.gz"
-    tar -cf - $2 | pigz -p 4 -9 > ~/backup_disk/$filename
-
-    echo "$(date): Encrypting Backup"
-    enc_filename=encrypted-$filename.gpg
-    gpg --output ~/backup_disk/$enc_filename --encrypt -r 15B87AFCCED88630 ~/backup_disk/$filename
-
-    count=$(( $(ls -1 ~/backup_disk | grep $1 | wc -l) - 2 ))
-    if [[ $count -lt 0 ]]; then
-        count=0
-    fi
-    for item in $(ls -1 ~/backup_disk | grep $1 | head -n $count); do
-        echo "removing: $item"
-        rm ~/backup_disk/$item
-    done
-
-
-    echo "$(date): Saving Backup to Backblaze"
-    rclone move ~/backup_disk/$enc_filename b2:$3 --b2-disable-checksum --transfers 32
-    echo "$(date): Done Backup to Backblaze"
-
-    count=$(( $(rclone lsf b2:$3 | grep $1 | wc -l) - 1 ))
-    if [[ $count -lt 0 ]]; then
-        count=0
-    fi
-    for item in $(rclone lsf b2:$3 | grep $1 | head -n $count); do
-        echo "removing from Backblaze: $item"
-        rclone deletefile --b2-hard-delete b2:$3/$item
-    done
-}
-
-printf "Container count: "
-docker ps | wc -l
-echo ""
-
+B2_RESTIC_REPO="s3:https://s3.us-east-005.backblazeb2.com/tinmarr-restic-repo"
 cd ~
+
 ##############################
-echo "$(date): Backing up notes"
+# Notes
+printf "$(date): ##### Backing up notes #####\n"
 cd ~/notes
 git add .
 git commit --no-gpg-sign -m "backup"
@@ -53,49 +13,63 @@ git push
 cd ~
 
 ##############################
-echo "$(date): Backing up Actual Budget"
-_backup_folder actual actual-data $CHAPPY_BUCKET
+# Actual
+printf "\n$(date): ##### Backing up Actual #####\n"
+sqlite3 ~/actual-data/server-files/account.sqlite ".backup '/home/martin/actual-data/server-files/account-bak.sqlite'"
+sqlite3 ~/actual-data/user-files/group-bfad409d-1408-4503-af51-b53e9c5ab126.sqlite ".backup '/home/martin/actual-data/user-files/group-bak.sqlite'"
+restic -r ~/backup_disk backup ~/actual-data
+restic -r $B2_RESTIC_REPO backup ~/actual-data
 
 ##############################
-echo "$(date): Backing up Vaultwarden"
+# Vaultwarden
+printf "\n$(date): ##### Backing up VW #####\n"
 sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
-
-_backup_folder vw vw-data $CHAPPY_BUCKET
+restic -r ~/backup_disk backup ~/vw-data
+restic -r $B2_RESTIC_REPO backup  ~/vw-data
 
 ##############################
-cd ~/home-server-configs/docker
-eval "$(direnv export bash)"
-echo "$(date): Backing up misc service configs"
-docker compose -f management/docker-compose.yml down uptime-kuma dockge > /dev/null 2>&1 &
-docker compose -f misc/docker-compose.yml down jellyfin jellyseerr > /dev/null 2>&1 &
-docker compose -f pihole/docker-compose.yml down > /dev/null 2>&1 &
-docker compose -f tinflix/docker-compose.yml down > /dev/null 2>&1 &
-
-echo "$(date): Waiting for services to go down"
-wait
-
-folders="$(echo management/{dockge-data,kuma-data} misc/{jellyfin-config,jellyseerr-config} pihole/etc-pihole tinflix/*/)"
-_backup_folder services "$folders" $CHAPPY_BUCKET
-
-docker compose -f management/docker-compose.yml up -d > /dev/null 2>&1 &
-docker compose -f misc/docker-compose.yml up -d > /dev/null 2>&1 &
-docker compose -f pihole/docker-compose.yml up -d > /dev/null 2>&1 &
-docker compose -f tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
-
-echo "$(date): Waiting for services to go up"
-wait
-cd ~
+# Switch to home configs
+cd ~/home-server-configs
 eval "$(direnv export bash)"
 
 ##############################
-echo "$(date): Backing up photos"
+# Services
+printf "\n$(date): ##### Backing up service data #####\n"
+docker compose -f docker/management/docker-compose.yml down uptime-kuma dockge > /dev/null 2>&1 &
+docker compose -f docker/misc/docker-compose.yml down jellyfin jellyseerr > /dev/null 2>&1 &
+docker compose -f docker/tinflix/docker-compose.yml down > /dev/null 2>&1 &
+printf "\n$(date): Waiting for services to go down\n"
+wait
 
-docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | gzip > "/home/martin/media/photos/dump.sql.gz"
-_backup_folder photos "$(echo ./media/photos/{library,profile,upload,dump.sql.gz})" $CHAPPY_BUCKET
-rm ./media/photos/dump.sql.gz # Don't need to save random dumps
+folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-config,jellyseerr-config} docker/tinflix/*/)"
+restic -r ~/backup_disk backup $folders
+restic -r $B2_RESTIC_REPO backup $folders
 
-echo "$(date): Done"
+docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
+docker compose -f docker/misc/docker-compose.yml up -d > /dev/null 2>&1 &
+docker compose -f docker/tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
+printf "\n$(date): Waiting for services to go up\n"
+wait
 
-printf "Container count: "
-docker ps | wc -l
-echo ""
+##############################
+# Photos
+printf "\n$(date): ##### Backing up photos #####\n"
+docker compose -f docker/immich/docker-compose.yml down
+docker compose -f docker/immich/docker-compose.yml up -d database
+docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | pigz -1 -p 4 > "/home/martin/media/photos/dump.sql.gz"
+docker compose -f docker/immich/docker-compose.yml down
+
+restic -r ~/backup_disk backup ~/media/photos/{dump.sql.gz,library,upload,profile}
+restic -r $B2_RESTIC_REPO backup ~/media/photos/{dump.sql.gz,library,upload,profile}
+
+docker compose -f docker/immich/docker-compose.yml up -d
+
+##############################
+# Cleanup
+printf "\n$(date): ##### Cleanup #####\n"
+restic -r ~/backup_disk forget --keep-last 3
+restic -r ~/backup_disk prune 
+restic -r $B2_RESTIC_REPO forget --keep-last 1
+restic -r $B2_RESTIC_REPO prune --max-unused unlimited
+cd ~/home-server-configs/cron
+ls -t backup-*.log | tail -n +15 | xargs rm -f

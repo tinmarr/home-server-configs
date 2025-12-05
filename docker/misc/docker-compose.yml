@@ -9,6 +9,7 @@ services:
       - ${IP}:9090:80
     network_mode: bridge
     # env_file: .env
+    user: 1000:1000
     labels:
       - homepage.group=Apps
       - homepage.name=Vaultwarden
@@ -27,6 +28,7 @@ services:
       # '/data' is the path Actual will look for its files in by default, so leave that as-is.
       - /home/martin/actual-data:/data
     restart: unless-stopped
+    user: 1000:1000
     labels:
       - homepage.group=Apps
       - homepage.name=Actual Budget
