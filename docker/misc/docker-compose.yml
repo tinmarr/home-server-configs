@@ -75,6 +75,30 @@ services:
       - homepage.href=https://tinflix.tinmarr.com
       - homepage.icon=jellyseerr
 
+  syncthing:
+    image: syncthing/syncthing
+    container_name: syncthing
+    hostname: my-syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - STGUIADDRESS=
+    volumes:
+      - /home/martin/notes:/var/syncthing/notes
+      - ./st-data:/var/syncthing
+    network_mode: host
+    restart: unless-stopped
+    healthcheck:
+      test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    labels:
+      - homepage.group=Apps
+      - homepage.name=Syncthing
+      - homepage.href=https://internal.tinmarr.com/syncthing
+      - homepage.icon=syncthing
+
   # homeassistant:
   #   container_name: homeassistant
   #   image: ghcr.io/home-assistant/home-assistant:stable

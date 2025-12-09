@@ -2,8 +2,3 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
-- Apps:
-  - Syncthing:
-      href: https://internal.tinmarr.com/syncthing
-      icon: syncthing
-      weight: 100
