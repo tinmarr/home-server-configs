@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 B2_RESTIC_REPO="s3:https://s3.us-east-005.backblazeb2.com/tinmarr-restic-repo"
+LOCAL_RESTIC_REPO=~/backup_disk/restic_repo
 cd ~
 
 ##############################
@@ -17,14 +18,14 @@ cd ~
 printf "\n$(date): ##### Backing up Actual #####\n"
 sqlite3 ~/actual-data/server-files/account.sqlite ".backup '/home/martin/actual-data/server-files/account-bak.sqlite'"
 sqlite3 ~/actual-data/user-files/group-bfad409d-1408-4503-af51-b53e9c5ab126.sqlite ".backup '/home/martin/actual-data/user-files/group-bak.sqlite'"
-restic -r ~/backup_disk backup ~/actual-data
+restic -r $LOCAL_RESTIC_REPO backup ~/actual-data
 restic -r $B2_RESTIC_REPO backup ~/actual-data
 
 ##############################
 # Vaultwarden
 printf "\n$(date): ##### Backing up VW #####\n"
 sqlite3 ~/vw-data/db.sqlite3 ".backup '/home/martin/vw-data/db-backup.sqlite3'"
-restic -r ~/backup_disk backup ~/vw-data
+restic -r $LOCAL_RESTIC_REPO backup ~/vw-data
 restic -r $B2_RESTIC_REPO backup  ~/vw-data
 
 ##############################
@@ -42,7 +43,7 @@ printf "\n$(date): Waiting for services to go down\n"
 wait
 
 folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-config,jellyseerr-config} docker/tinflix/*/)"
-restic -r ~/backup_disk backup $folders
+restic -r $LOCAL_RESTIC_REPO backup $folders
 restic -r $B2_RESTIC_REPO backup $folders
 
 docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
@@ -59,7 +60,7 @@ docker compose -f docker/immich/docker-compose.yml up -d database
 docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | pigz -1 -p 4 > "/home/martin/media/photos/dump.sql.gz"
 docker compose -f docker/immich/docker-compose.yml down
 
-restic -r ~/backup_disk backup ~/media/photos/{dump.sql.gz,library,upload,profile}
+restic -r $LOCAL_RESTIC_REPO backup ~/media/photos/{dump.sql.gz,library,upload,profile}
 restic -r $B2_RESTIC_REPO backup ~/media/photos/{dump.sql.gz,library,upload,profile}
 
 docker compose -f docker/immich/docker-compose.yml up -d
@@ -67,8 +68,8 @@ docker compose -f docker/immich/docker-compose.yml up -d
 ##############################
 # Cleanup
 printf "\n$(date): ##### Cleanup #####\n"
-restic -r ~/backup_disk forget --keep-last 3
-restic -r ~/backup_disk prune 
+restic -r $LOCAL_RESTIC_REPO forget --keep-last 3
+restic -r $LOCAL_RESTIC_REPO prune 
 restic -r $B2_RESTIC_REPO forget --keep-last 1
 restic -r $B2_RESTIC_REPO prune --max-unused unlimited
 cd ~/home-server-configs/cron
