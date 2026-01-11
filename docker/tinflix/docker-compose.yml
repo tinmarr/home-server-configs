@@ -12,7 +12,7 @@ services:
       - WEBUI_PORT=9091
     volumes:
       - ./qbit-config:/config
-      - /home/martin/Downloads:/downloads
+      - /home/martin/backup_disk/qbit_downloads:/downloads
     network_mode: service:wireguard
     # ports:
     #   - 9091:9091
@@ -81,7 +81,7 @@ services:
     volumes:
       - ./radarr-config:/config
       - /home/martin/media/movies:/movies
-      - /home/martin/Downloads:/downloads
+      - /home/martin/backup_disk/qbit_downloads:/downloads
     ports:
       - ${IP}:7878:7878
     restart: unless-stopped
@@ -101,7 +101,7 @@ services:
     volumes:
       - ./sonarr-config:/config
       - /home/martin/media/tv:/tv
-      - /home/martin/Downloads:/downloads
+      - /home/martin/backup_disk/qbit_downloads:/downloads
     ports:
       - ${IP}:8989:8989
     restart: unless-stopped
