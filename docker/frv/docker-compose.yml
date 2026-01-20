@@ -17,6 +17,6 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - ./pgdata:/var/lib/postgresql/18/data
+      - ./pgdata:/var/lib/postgresql/data
     ports:
       - ${IP}:5432:5432
