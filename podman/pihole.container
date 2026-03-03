@@ -4,15 +4,15 @@ After=network-online.target
 Wants=network-online.target
 
 [Container]
-Image=pihole/pihole:latest
-AutoUpdate=registry
-PublishPort=127.0.0.1:53:53/tcp
-PublishPort=127.0.0.1:53:53/udp
+Image=docker.io/pihole/pihole:latest
+# nginx maps back to 53
+PublishPort=127.0.0.1:1053:53/tcp 
+PublishPort=127.0.0.1:1053:53/udp 
 PublishPort=127.0.0.1:8888:80/tcp
 Environment=TZ=America/Montreal
 Environment=FTLCONF_dns_listeningMode=all
 Volume=%h/home-server-configs/docker/pihole/etc-pihole:/etc/pihole
-CapAdd=SYS_NICE
+AddCapability=SYS_NICE
 Label=homepage.group=Monitoring
 Label=homepage.name=PiHole
 Label=homepage.href=https://pihole.tinmarr.com/admin
@@ -20,10 +20,10 @@ Label=homepage.icon=pi-hole
 Label=homepage.widget.type=pihole
 Label=homepage.widget.url=http://127.0.0.1:8888
 Label=homepage.widget.version=6
-Label=homepage.widget.key=${PIHOLE_KEY}
+#Label=homepage.widget.key=${PIHOLE_KEY}
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
