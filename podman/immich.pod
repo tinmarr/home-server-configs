@@ -1,0 +1,13 @@
+[Unit]
+Description=Immich Pod (Server + ML + Redis + DB)
+After=network-online.target
+Wants=network-online.target
+
+[Pod]
+PublishPort=127.0.0.1:2283:2283
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

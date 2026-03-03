@@ -1,0 +1,26 @@
+[Unit]
+Description=Jellyfin Media Server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=lscr.io/linuxserver/jellyfin:latest
+AutoUpdate=registry
+PublishPort=127.0.0.1:8096:8096
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=TZ=America/Montreal
+Environment=JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
+Volume=%h/home-server-configs/docker/misc/jellyfin-config:/config
+Volume=%h/media:/data
+Device=/dev/dri/renderD128:/dev/dri/renderD128
+Label=homepage.group=Tinflix
+Label=homepage.name=Jellyfin
+Label=homepage.href=https://jellyfin.tinmarr.com
+Label=homepage.icon=jellyfin
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=multi-user.target

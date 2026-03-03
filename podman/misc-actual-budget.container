@@ -1,0 +1,21 @@
+[Unit]
+Description=Actual Budget
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/actualbudget/actual-server:latest
+AutoUpdate=registry
+PublishPort=127.0.0.1:5006:5006
+Volume=%h/actual-data:/data
+User=1000:1000
+Label=homepage.group=Apps
+Label=homepage.name=Actual Budget
+Label=homepage.href=https://budget.tinmarr.com
+Label=homepage.icon=actual-budget
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=multi-user.target

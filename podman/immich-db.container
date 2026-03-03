@@ -1,0 +1,21 @@
+[Unit]
+Description=Immich PostgreSQL Database
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:739cdd626151ff1f796dc95a6591b55a714f341c737e27f045019ceabf8e8c52
+Pod=immich.pod
+EnvironmentFile=./%h/home-server-configs/podman/immich.env
+Environment=POSTGRES_PASSWORD=${DB_PASSWORD}
+Environment=POSTGRES_USER=${DB_USERNAME}
+Environment=POSTGRES_DB=${DB_DATABASE_NAME}
+Environment=POSTGRES_INITDB_ARGS=--data-checksums
+Volume=%h/home-server-configs/docker/immich/pgdata:/var/lib/postgresql/data
+HealthCheck=/bin/sh -c pg_isready --dbname="${DB_DATABASE_NAME}" --username="${DB_USERNAME}" || exit 1
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

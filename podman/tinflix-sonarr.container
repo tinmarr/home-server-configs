@@ -1,0 +1,26 @@
+[Unit]
+Description=Sonarr TV Downloader
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=lscr.io/linuxserver/sonarr:latest
+AutoUpdate=registry
+Pod=tinflix.pod
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=TZ=America/Montreal
+Volume=%h/home-server-configs/docker/tinflix/sonarr-config:/config
+Volume=%h/media/tv:/tv
+Volume=%h/backup_disk/qbit_downloads:/downloads
+PublishPort=127.0.0.1:8989:8989
+Label=homepage.group=Tinflix
+Label=homepage.name=Sonarr
+Label=homepage.href=/sonarr
+Label=homepage.icon=sonarr
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=multi-user.target

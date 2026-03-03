@@ -1,0 +1,29 @@
+[Unit]
+Description=Immich Server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/immich-app/immich-server:release
+AutoUpdate=registry
+Pod=immich.pod
+User=1000
+Volume=${UPLOAD_LOCATION}:/usr/src/app/upload
+Volume=/etc/localtime:/etc/localtime:ro
+EnvironmentFile=./%h/home-server-configs/podman/immich.env
+Device=/dev/dri:/dev/dri
+Label=homepage.group=Apps
+Label=homepage.name=Immich
+Label=homepage.href=https://immich.tinmarr.com
+Label=homepage.icon=immich
+Label=homepage.widget.type=immich
+Label=homepage.widget.url=https://immich.tinmarr.com
+Label=homepage.widget.key=${IMMICH_KEY}
+Label=homepage.widget.version=2
+Label=homepage.widget.fields=["photos", "videos", "storage"]
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

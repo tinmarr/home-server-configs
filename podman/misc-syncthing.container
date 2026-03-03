@@ -1,0 +1,26 @@
+[Unit]
+Description=Syncthing File Sync
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=syncthing/syncthing
+AutoUpdate=registry
+Hostname=my-syncthing
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=STGUIADDRESS=
+Volume=%h/notes:/var/syncthing/notes
+Volume=%h/home-server-configs/docker/misc/st-data:/var/syncthing
+Network=host
+HealthCheck=/bin/sh -c curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
+Label=homepage.group=Apps
+Label=homepage.name=Syncthing
+Label=homepage.href=https://internal.tinmarr.com/syncthing
+Label=homepage.icon=syncthing
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=multi-user.target
