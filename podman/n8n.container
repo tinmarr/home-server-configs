@@ -1,0 +1,19 @@
+[Unit]
+Description=n8n Workflow Automation
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.n8n.io/n8nio/n8n:latest
+PublishPort=5678:5678
+Environment=GENERIC_TIMEZONE=America/Montreal
+Environment=TZ=America/Montreal
+Environment=N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+Environment=N8N_RUNNERS_ENABLED=true
+Volume=%h/home-server-configs/data/n8n-data:/home/node/.n8n
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
