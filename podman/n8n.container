@@ -6,14 +6,11 @@ Wants=network-online.target
 [Container]
 Image=docker.n8n.io/n8nio/n8n:latest
 PublishPort=5678:5678
-Environment=GENERIC_TIMEZONE=America/Montreal
-Environment=TZ=America/Montreal
-Environment=N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-Environment=N8N_RUNNERS_ENABLED=true
-Volume=%h/home-server-configs/data/n8n-data:/home/node/.n8n
+EnvironmentFile=%h/home-server-configs/podman/n8n.conf
+Volume=%h/home-server-configs/data/n8n-data:/home/node/.n8n:U
 
-[Service]
-Restart=always
+#[Service]
+#Restart=always
 
 [Install]
 WantedBy=default.target
