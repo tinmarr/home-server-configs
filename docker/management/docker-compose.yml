@@ -1,21 +1,4 @@
 services:
-  watchtower:
-    container_name: watchtower
-    image: nickfedor/watchtower
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-    command: --cleanup --schedule "0 0 2 * * *" --http-api-token "${WATCHTOWER_KEY}" --http-api-metrics
-    labels:
-      - homepage.group=Monitoring
-      - homepage.name=Watchtower
-      - homepage.href=#
-      - homepage.icon=watchtower
-      - homepage.widget.type=watchtower
-      - homepage.widget.url=http://watchtower:8080
-      - homepage.widget.key=${WATCHTOWER_KEY}
-
   homepage:
     container_name: homepage
     image: ghcr.io/gethomepage/homepage:latest
