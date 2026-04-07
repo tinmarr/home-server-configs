@@ -55,15 +55,9 @@ wait
 ##############################
 # Photos
 printf "\n$(date): ##### Backing up photos #####\n"
-docker compose -f docker/immich/docker-compose.yml down
-docker compose -f docker/immich/docker-compose.yml up -d database
-docker exec -t immich_postgres pg_dumpall --clean --if-exists --username=postgres | pigz -1 -p 4 > "/home/martin/media/photos/dump.sql.gz"
-docker compose -f docker/immich/docker-compose.yml down
 
-restic -r $LOCAL_RESTIC_REPO backup ~/media/photos/{dump.sql.gz,library,upload,profile}
-restic -r $B2_RESTIC_REPO backup ~/media/photos/{dump.sql.gz,library,upload,profile}
-
-docker compose -f docker/immich/docker-compose.yml up -d
+restic -r $LOCAL_RESTIC_REPO backup ~/media/photos
+restic -r $B2_RESTIC_REPO backup ~/media/photos
 
 ##############################
 # Cleanup
