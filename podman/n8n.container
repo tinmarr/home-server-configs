@@ -5,6 +5,7 @@ Wants=network-online.target
 
 [Container]
 Image=docker.n8n.io/n8nio/n8n:latest
+AutoUpdate=registry
 PublishPort=5678:5678
 EnvironmentFile=%h/home-server-configs/podman/n8n.conf
 Volume=%h/home-server-configs/data/n8n-data:/home/node/.n8n:U

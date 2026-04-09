@@ -5,6 +5,7 @@ Wants=network-online.target
 
 [Container]
 Image=docker.io/pihole/pihole:latest
+AutoUpdate=registry
 # nginx maps back to 53
 PublishPort=127.0.0.1:1053:53/tcp 
 PublishPort=127.0.0.1:1053:53/udp 
