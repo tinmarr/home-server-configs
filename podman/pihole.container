@@ -12,7 +12,7 @@ PublishPort=127.0.0.1:1053:53/udp
 PublishPort=127.0.0.1:8888:80/tcp
 Environment=TZ=America/Montreal
 Environment=FTLCONF_dns_listeningMode=all
-Volume=%h/home-server-configs/docker/pihole/etc-pihole:/etc/pihole
+Volume=%h/service-data/etc-pihole:/etc/pihole
 AddCapability=SYS_NICE
 Label=homepage.group=Monitoring
 Label=homepage.name=PiHole
