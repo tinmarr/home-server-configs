@@ -42,7 +42,7 @@ docker compose -f docker/tinflix/docker-compose.yml down > /dev/null 2>&1 &
 printf "\n$(date): Waiting for services to go down\n"
 wait
 
-folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-config,jellyseerr-config} docker/tinflix/*/)"
+folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-config,seerr-config} docker/tinflix/*/)"
 restic -r $LOCAL_RESTIC_REPO backup $folders
 restic -r $B2_RESTIC_REPO backup $folders
 
