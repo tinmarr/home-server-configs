@@ -1,7 +1,7 @@
 name: tinflix
 services:
   qbit:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:5.1.4
     container_name: qbit
     depends_on:
       - wireguard
