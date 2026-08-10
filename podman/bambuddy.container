@@ -1,0 +1,26 @@
+[Unit]
+Description=Bambuddy - 3D Printer Management
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/maziggy/bambuddy:latest
+AutoUpdate=registry
+ContainerName=bambuddy
+Network=host
+AddCapability=NET_BIND_SERVICE
+Volume=%h/service-data/bambuddy-data:/app/data
+Volume=bambuddy-logs:/app/logs
+Environment=TZ=America/Toronto
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=PORT=9094
+StopTimeout=30
+Label=homepage.group=3D Printing
+Label=homepage.name=Bambuddy
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
