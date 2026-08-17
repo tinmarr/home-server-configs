@@ -1,0 +1,27 @@
+[Unit]
+Description=Obico ML API
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/thespaghettidetective/ml_api:latest
+AutoUpdate=registry
+ContainerName=ml_api
+HostName=ml_api
+PodmanArgs=--tty
+PublishPort=192.168.0.10:3333:3333
+Environment=DEBUG=True
+Environment=FLASK_APP=server.py
+#Environment=ML_API_TOKEN=
+Exec=bash -c "gunicorn --bind 0.0.0.0:3333 --workers 1 wsgi"
+HealthCmd=wget --no-verbose --tries=1 --spider --no-check-certificate http://ml_api:3333/hc/
+HealthStartPeriod=30s
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
