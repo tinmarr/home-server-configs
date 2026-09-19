@@ -1,0 +1,20 @@
+[Unit]
+Description=Matter Server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/matter-js/matterjs-server:stable
+AutoUpdate=registry
+ContainerName=matterjs-server
+Network=host
+Environment=TZ=America/Montreal
+Volume=/home/martin/service-data/matter-server:/data
+Label=homepage.group=Apps
+Label="homepage.name=Matter Server"
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

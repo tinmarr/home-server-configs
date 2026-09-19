@@ -1,0 +1,32 @@
+[Unit]
+Description=OpenThread Border Router
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/openthread/border-router:latest
+AutoUpdate=registry
+ContainerName=otbr
+Network=host
+PodmanArgs=--privileged
+AddCapability=NET_ADMIN
+AddDevice=/dev/net/tun
+AddDevice=/dev/serial/by-id/usb-SMLIGHT_SMLIGHT_SLZB-07_3efaf34cd6a0ef118578aaa361ce3355-if00-port0:/dev/ttyUSB0
+Environment=TZ=America/Montreal
+Environment=OT_RCP_DEVICE=spinel+hdlc+uart:///dev/ttyUSB0?uart-baudrate=460800&uart-flow-control
+Environment=OT_INFRA_IF=eno1
+Environment=OT_THREAD_IF=wpan0
+Environment=OT_LOG_LEVEL=7
+Environment=OT_REST_LISTEN_ADDR=0.0.0.0
+Environment=OT_REST_LISTEN_PORT=8081
+Environment=OT_WEB_LISTEN_ADDR=0.0.0.0
+Environment=OT_WEB_LISTEN_PORT=8080
+Volume=/home/martin/service-data/otbr:/data
+Label=homepage.group=Apps
+Label="homepage.name=OpenThread Border Router"
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,25 @@
+[Unit]
+Description=Home Assistant
+After=network-online.target matter-server.service otbr.service
+Wants=network-online.target
+Requires=matter-server.service otbr.service
+
+[Container]
+Image=ghcr.io/home-assistant/home-assistant:stable
+AutoUpdate=registry
+ContainerName=homeassistant
+Network=host
+PodmanArgs=--privileged
+Environment=TZ=America/Montreal
+Volume=/home/martin/service-data/ha-config:/config
+Volume=/etc/localtime:/etc/localtime:ro
+Label=homepage.group=Apps
+Label="homepage.name=Home Assistant"
+Label=homepage.href=https://ha.tinmarr.com
+Label=homepage.icon=home-assistant
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
