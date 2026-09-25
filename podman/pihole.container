@@ -12,6 +12,8 @@ PublishPort=127.0.0.1:1053:53/udp
 PublishPort=127.0.0.1:8888:80/tcp
 Environment=TZ=America/Montreal
 Environment=FTLCONF_dns_listeningMode=all
+Environment=PIHOLE_UID=0
+Environment=PIHOLE_GID=0
 Volume=%h/service-data/etc-pihole:/etc/pihole
 AddCapability=SYS_NICE
 Label=homepage.group=Monitoring

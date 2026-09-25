@@ -29,6 +29,12 @@ restic -r $LOCAL_RESTIC_REPO backup ~/vw-data
 restic -r $B2_RESTIC_REPO backup  ~/vw-data
 
 ##############################
+# Service Data
+printf "\n$(date): ##### Backing up Service Data #####\n"
+restic -r $LOCAL_RESTIC_REPO backup ~/service-data
+restic -r $B2_RESTIC_REPO backup  ~/service-data
+
+##############################
 # Switch to home configs
 cd ~/home-server-configs
 eval "$(direnv export bash)"
