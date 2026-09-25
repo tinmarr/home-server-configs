@@ -11,7 +11,7 @@ Network=host
 PodmanArgs=--privileged
 AddCapability=NET_ADMIN
 AddDevice=/dev/net/tun
-AddDevice=/dev/serial/by-id/usb-SMLIGHT_SMLIGHT_SLZB-07_3efaf34cd6a0ef118578aaa361ce3355-if00-port0:/dev/ttyUSB0
+AddDevice=/dev/serial/by-id/usb-SMLIGHT_SMLIGHT_SLZB-07Mg26_4e5fb065d2a0ef11b610a8a361ce3355-if00-port0:/dev/ttyUSB0
 Environment=TZ=America/Montreal
 Environment=OT_RCP_DEVICE=spinel+hdlc+uart:///dev/ttyUSB0?uart-baudrate=460800&uart-flow-control
 Environment=OT_INFRA_IF=eno1
