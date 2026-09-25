@@ -52,10 +52,14 @@ folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-
 restic -r $LOCAL_RESTIC_REPO backup $folders
 restic -r $B2_RESTIC_REPO backup $folders
 
-docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
-docker compose -f docker/misc/docker-compose.yml up -d > /dev/null 2>&1 &
-docker compose -f docker/tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
-printf "\n$(date): Waiting for services to go up\n"
+if [[ -v SKIP_UP ]]; then
+    printf "\n$(date): SKIP_UP set. Skipping compose up\n"
+else
+    docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
+    docker compose -f docker/misc/docker-compose.yml up -d > /dev/null 2>&1 &
+    docker compose -f docker/tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
+    printf "\n$(date): Waiting for services to go up\n"
+fi
 wait
 
 ##############################
