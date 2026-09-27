@@ -37,6 +37,19 @@ in
   powerManagement.enable = true;
   services.tlp.enable = true;
 
+  system.autoUpgrade = {
+    enable = true;
+    dates = "02:00";
+    allowReboot = true;
+  };
+
+  nix.optimise.automatic = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
   networking.hostName = "martinsv"; # Define your hostname.
 
   networking.useDHCP = false;
@@ -52,7 +65,8 @@ in
       networkConfig = {
         Address = "192.168.0.10/24";
         Gateway = "192.168.0.1";
-        DNS = "192.168.0.10 1.1.1.1";
+        # Use the local Pi-hole proxy. Its upstream fallback is configured in nginx.conf.
+        DNS = "192.168.0.10";
         DHCP = false;
       };
     };
