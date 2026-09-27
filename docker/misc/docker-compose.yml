@@ -45,7 +45,7 @@ services:
       - JELLYFIN_PublishedServerUrl=https://jellyfin.tinmarr.com
     volumes:
       - ./jellyfin-config:/config
-      - /home/martin/media:/data
+      - /srv/storage:/data
     ports:
       - ${IP}:8096:8096
     devices:

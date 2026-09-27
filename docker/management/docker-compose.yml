@@ -12,7 +12,7 @@ services:
       #HOMEPAGE_ALLOWED_HOSTS: gethomepage.dev # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
       LOG_TARGETS: stdout
       PUID: 1000
-      PGID: 1000
+      PGID: 100
 
   uptime-kuma:
     container_name: kuma
