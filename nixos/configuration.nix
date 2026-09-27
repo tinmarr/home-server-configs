@@ -24,6 +24,16 @@
     "net.ipv6.conf.eno1.accept_ra_rt_info_max_plen" = 64;
   };
 
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+
+  powerManagement.enable = true;
+  services.tlp.enable = true;
+
   networking.hostName = "martinsv"; # Define your hostname.
 
   networking.useDHCP = false;

@@ -28,12 +28,12 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  fileSystems."/srv/disks/1" = # disk sn ending in 312
+  fileSystems."/srv/disks/1" = # disk sn ending in 312 (primary mount)
     { device = "/dev/disk/by-uuid/a2e7f33b-2d69-4176-9500-ffcb34860632";
       fsType = "ext4";
     };
 
-  fileSystems."/srv/disks/2" = # disk sn ending in 216
+  fileSystems."/srv/disks/2" = # disk sn ending in 216 (mount in disk bay)
     { device = "/dev/disk/by-uuid/caa061e4-35da-45ab-95d2-ec90429f78a4";
       fsType = "ext4";
     };
@@ -59,6 +59,21 @@
     device = "/.swapfile";
     size = 8000; # in MB
   } ];
+
+  systemd.services.hdparm-spindown = {
+    description = "Configure HDD spindown timeouts";
+    wantedBy = [ "multi-user.target" ];
+
+    # 1-240 = multiples of 5s
+    # 241 = 30 mins
+    script = ''
+      ${pkgs.hdparm}/bin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0387312
+      ${pkgs.hdparm}/bin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0384216
+      ${pkgs.hdparm}/bin/hdparm -S 120 /dev/disk/by-id/ata-ST1000NM0053-1C1173_Z1W3DBQG
+      '';
+
+    serviceConfig.Type = "oneshot";
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = true;
