@@ -3,7 +3,10 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
-
+let unstable = import <nixpkgs-unstable> {
+  config = config.nixpkgs.config;
+};
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -72,6 +75,7 @@
     extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
     home = "/home/martin";
+    linger = true;
   };
 
   powerManagement.powertop.enable = true;
@@ -120,7 +124,7 @@
     gnupg
 
     # "apps"
-    codex
+    unstable.codex
   ];
 
   # docker
