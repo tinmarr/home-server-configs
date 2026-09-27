@@ -13,5 +13,5 @@
     label: Main disk
     disk: /
 - resources:
-    label: Backup disk
-    disk: /mnt/backup
+    label: Storage disks
+    disk: /srv/storage

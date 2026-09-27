@@ -6,16 +6,21 @@ Wants=network-online.target
 [Container]
 Image=docker.io/pihole/pihole:latest
 AutoUpdate=registry
+
 # nginx maps back to 53
 PublishPort=127.0.0.1:1053:53/tcp 
 PublishPort=127.0.0.1:1053:53/udp 
 PublishPort=127.0.0.1:8888:80/tcp
+
 Environment=TZ=America/Montreal
+
 Environment=FTLCONF_dns_listeningMode=all
-Environment=PIHOLE_UID=0
-Environment=PIHOLE_GID=0
+Environment=DNSMASQ_USER=root
+
 Volume=%h/service-data/etc-pihole:/etc/pihole
+
 AddCapability=SYS_NICE
+
 Label=homepage.group=Monitoring
 Label=homepage.name=PiHole
 Label=homepage.href=https://pihole.tinmarr.com/admin
