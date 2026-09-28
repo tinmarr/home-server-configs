@@ -25,10 +25,6 @@ Label=homepage.group=Monitoring
 Label=homepage.name=PiHole
 Label=homepage.href=https://pihole.tinmarr.com/admin
 Label=homepage.icon=pi-hole
-Label=homepage.widget.type=pihole
-Label=homepage.widget.url=http://127.0.0.1:8888
-Label=homepage.widget.version=6
-#Label=homepage.widget.key=${PIHOLE_KEY}
 
 [Service]
 Restart=always

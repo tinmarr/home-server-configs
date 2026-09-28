@@ -13,6 +13,7 @@ PodmanArgs=--privileged
 Environment=TZ=America/Montreal
 Volume=/home/martin/service-data/ha-config:/config
 Volume=/etc/localtime:/etc/localtime:ro
+
 Label=homepage.group=Apps
 Label="homepage.name=Home Assistant"
 Label=homepage.href=https://ha.tinmarr.com

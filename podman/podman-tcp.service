@@ -1,0 +1,13 @@
+[Unit]
+Description=Podman TCP API Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/env podman system service --time=0 tcp://192.168.0.10:2376
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

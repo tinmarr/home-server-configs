@@ -2,6 +2,14 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/docker/
 
-my-docker:
+docker:
   host: 192.168.0.10
   port: 2375
+
+podman-rootless:
+  host: 192.168.0.10
+  port: 2376
+
+podman-root:
+  host: 192.168.0.10
+  port: 2377

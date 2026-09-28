@@ -143,6 +143,9 @@ in
 
   # docker
   virtualisation.docker.enable = true;
+  virtualisation.docker.daemon.settings = {
+    hosts = ["tcp://192.168.0.10:2375" "unix:///var/run/docker.sock"];
+  };
   
   # podman
   virtualisation.containers.enable = true;
@@ -151,6 +154,18 @@ in
   systemd.timers.podman-auto-update = {
     wantedBy = [ "timers.target" ];
     overrideStrategy = "asDropin";
+  };
+  systemd.services.podman-tcp = {
+    description = "Podman TCP API Service";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "exec";
+      ExecStart = "${pkgs.podman}/bin/podman system service --time=0 tcp://192.168.0.10:2377";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
   };
 
   # nginx

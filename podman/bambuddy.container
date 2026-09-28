@@ -15,8 +15,11 @@ Environment=PORT=9094
 Environment=PUID=0
 Environment=PGID=0
 StopTimeout=30
-Label=homepage.group=3D Printing
+
+Label=homepage.group=Apps
 Label=homepage.name=Bambuddy
+Label=homepage.href=https://bambu.tinmarr.com
+Label=homepage.icon=sh-bambuddy
 
 [Service]
 Restart=always

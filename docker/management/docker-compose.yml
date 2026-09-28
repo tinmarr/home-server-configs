@@ -30,7 +30,3 @@ services:
       - homepage.name=UptimeKuma
       - homepage.href=https://kuma.tinmarr.com
       - homepage.icon=uptime-kuma
-      - homepage.widget.type=uptimekuma
-      - homepage.widget.url=https://kuma.tinmarr.com
-      - homepage.widget.slug=api
-      - homepage.widget.fields=["up", "down"]

@@ -6,7 +6,7 @@ Wants=network-online.target
 [Container]
 Image=ghcr.io/thespaghettidetective/ml_api:latest
 AutoUpdate=registry
-ContainerName=ml_api
+ContainerName=obico-ml-api
 HostName=ml_api
 PodmanArgs=--tty
 PublishPort=192.168.0.10:3333:3333

@@ -22,8 +22,6 @@ Environment=OT_REST_LISTEN_PORT=8081
 Environment=OT_WEB_LISTEN_ADDR=0.0.0.0
 Environment=OT_WEB_LISTEN_PORT=8080
 Volume=/home/martin/service-data/otbr:/data
-Label=homepage.group=Apps
-Label="homepage.name=OpenThread Border Router"
 
 [Service]
 Restart=always
