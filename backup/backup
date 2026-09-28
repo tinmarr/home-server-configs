@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 B2_RESTIC_REPO="s3:https://s3.us-east-005.backblazeb2.com/tinmarr-restic-repo"
-LOCAL_RESTIC_REPO=~/backup_disk/restic_repo
+LOCAL_RESTIC_REPO=/srv/backup/restic_repo
 cd ~
 
 ##############################
@@ -9,7 +11,7 @@ cd ~
 printf "$(date): ##### Backing up notes #####\n"
 cd ~/notes
 git add .
-git commit --no-gpg-sign -m "backup"
+git commit --no-gpg-sign -m "backup" && true
 git push
 cd ~
 
@@ -31,8 +33,8 @@ restic -r $B2_RESTIC_REPO backup  ~/vw-data
 ##############################
 # Service Data
 printf "\n$(date): ##### Backing up Service Data #####\n"
-restic -r $LOCAL_RESTIC_REPO backup ~/service-data
-restic -r $B2_RESTIC_REPO backup  ~/service-data
+podman unshare restic -r $LOCAL_RESTIC_REPO backup ~/service-data --exclude-file="$HOME/service-data/excludes"
+podman unshare restic -r $B2_RESTIC_REPO backup  ~/service-data --exclude-file="$HOME/service-data/excludes"
 
 ##############################
 # Switch to home configs
@@ -48,26 +50,30 @@ docker compose -f docker/tinflix/docker-compose.yml down > /dev/null 2>&1 &
 printf "\n$(date): Waiting for services to go down\n"
 wait
 
-folders="$(echo docker/management/{dockge-data,kuma-data} docker/misc/{jellyfin-config,seerr-config} docker/tinflix/*/)"
+folders="$(echo docker/management/kuma-data docker/misc/{jellyfin-config,seerr-config} docker/tinflix/*/)"
 restic -r $LOCAL_RESTIC_REPO backup $folders
 restic -r $B2_RESTIC_REPO backup $folders
 
 if [[ -v SKIP_UP ]]; then
-    printf "\n$(date): SKIP_UP set. Skipping compose up\n"
+  printf "\n$(date): SKIP_UP set. Skipping compose up\n"
 else
-    docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
-    docker compose -f docker/misc/docker-compose.yml up -d > /dev/null 2>&1 &
-    docker compose -f docker/tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
-    printf "\n$(date): Waiting for services to go up\n"
+  docker compose -f docker/management/docker-compose.yml up -d > /dev/null 2>&1 &
+  docker compose -f docker/misc/docker-compose.yml up -d > /dev/null 2>&1 &
+  docker compose -f docker/tinflix/docker-compose.yml up -d > /dev/null 2>&1 &
+  printf "\n$(date): Waiting for services to go up\n"
 fi
 wait
 
-##############################
-# Photos
-printf "\n$(date): ##### Backing up photos #####\n"
+if [[ -v SKIP_PHOTOS ]]; then
+  printf "\n$(date): SKIP_PHOTOS set. Skipping photos\n"
+else 
+  ##############################
+  # Photos
+  printf "\n$(date): ##### Backing up photos #####\n"
 
-restic -r $LOCAL_RESTIC_REPO backup ~/media/photos
-restic -r $B2_RESTIC_REPO backup ~/media/photos
+  restic -r $LOCAL_RESTIC_REPO backup /srv/storage/photos
+  restic -r $B2_RESTIC_REPO backup /srv/storage/photos
+fi
 
 ##############################
 # Cleanup
@@ -76,5 +82,5 @@ restic -r $LOCAL_RESTIC_REPO forget --keep-last 3
 restic -r $LOCAL_RESTIC_REPO prune 
 restic -r $B2_RESTIC_REPO forget --keep-last 1
 restic -r $B2_RESTIC_REPO prune --max-unused unlimited
-cd ~/home-server-configs/cron
+cd ~/home-server-configs/backup
 ls -t backup-*.log | tail -n +15 | xargs rm -f

@@ -1,0 +1,7 @@
+[Unit]
+Description=Back up home server data
+
+[Service]
+Type=oneshot
+TimeoutStartSec=infinity
+ExecStart=/usr/bin/env bash -c 'exec direnv exec "%h/home-server-configs" "%h/home-server-configs/backup/backup" > "%h/home-server-configs/backup/backup-$(date +%%F_%%H-%%M-%%S).log" 2>&1'
