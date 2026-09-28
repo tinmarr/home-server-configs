@@ -9,6 +9,8 @@ AutoUpdate=registry
 ContainerName=matter-server
 Network=host
 Environment=TZ=America/Montreal
+Environment=PRIMARY_INTERFACE=eno1
+Environment=LISTEN_ADDRESS=127.0.0.1
 Volume=/home/martin/service-data/matter-server:/data
 
 [Service]

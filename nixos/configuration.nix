@@ -25,6 +25,8 @@ in
     "net.ipv6.conf.all.forwarding" = 1;
     "net.ipv6.conf.eno1.accept_ra" = 2;
     "net.ipv6.conf.eno1.accept_ra_rt_info_max_plen" = 64;
+    # Keep Matter-over-Thread sleepy-device UDP flows alive between check-ins.
+    "net.netfilter.nf_conntrack_udp_timeout_stream" = 3600;
   };
 
   systemd.targets = {
@@ -68,6 +70,7 @@ in
         # Use the local Pi-hole proxy. Its upstream fallback is configured in nginx.conf.
         DNS = "192.168.0.10";
         DHCP = false;
+        IPv6AcceptRA = true;
       };
     };
   };
