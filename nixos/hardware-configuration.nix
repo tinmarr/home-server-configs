@@ -71,10 +71,8 @@
     wantedBy = [ "multi-user.target" ];
 
     # 1-240 = multiples of 5s
-    # 241 = 30 mins
+    # 241-251 = multiples 30 mins
     script = ''
-      ${pkgs.hdparm}/bin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0387312
-      ${pkgs.hdparm}/bin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0384216
       ${pkgs.hdparm}/bin/hdparm -S 120 /dev/disk/by-id/ata-ST1000NM0053-1C1173_Z1W3DBQG
       '';
 
@@ -87,7 +85,7 @@
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-vaapi-driver   # i965 — correct for Haswell/HD 4600
+      intel-vaapi-driver
     ];
   };
   environment.sessionVariables.LIBVA_DRIVER_NAME = "i965";
