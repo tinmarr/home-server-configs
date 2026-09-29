@@ -58,6 +58,7 @@
   fileSystems."/srv/backup" = 
     { device = "/dev/disk/by-uuid/f41f3dfe-ff84-481b-a61a-120ac35966f1";
       fsType = "ext4";
+      options = ["nofail"];
     };
 
   swapDevices = [ {

@@ -29,6 +29,8 @@ in
     "net.netfilter.nf_conntrack_udp_timeout_stream" = 3600;
   };
 
+  systemd.enableEmergencyMode = false;
+
   systemd.targets = {
     sleep.enable = false;
     suspend.enable = false;
